@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vidly.Data;
 
@@ -11,9 +12,11 @@ using Vidly.Data;
 namespace Vidly.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231005111741_AppliedAnnotationToCustomerName")]
+    partial class AppliedAnnotationToCustomerName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,6 +239,9 @@ namespace Vidly.Migrations
                         .HasColumnType("bit");
 
                     b.Property<byte>("MembershipTypeId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("MemebershipTypeId")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Name")
