@@ -13,8 +13,12 @@ namespace Vidly.Models
 
         public DateTime DateAdded { get; set; }
 
+        [Display(Name = "Release Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime ReleaseDate { get; set; }
 
+        [Display(Name = "Number In Stock")]
         public byte NumberInStock { get; set; }
     }
 }
