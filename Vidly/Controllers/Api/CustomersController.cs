@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Vidly.Data;
+using Vidly.Dtos;
 using Vidly.Models;
 
 namespace Vidly.Controllers.Api
@@ -11,10 +13,12 @@ namespace Vidly.Controllers.Api
     public class CustomersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CustomersController(ApplicationDbContext context)
+        public CustomersController(ApplicationDbContext context,IMapper mapper)
         {
            _context = context;
+            _mapper = mapper;
         }
 
         //endpoint to get customers
@@ -22,7 +26,8 @@ namespace Vidly.Controllers.Api
         public IActionResult GetAllCustomers()
         {
             var customers = _context.Customers.ToList();
-            return Ok(customers);
+            var customerDto = _mapper.Map<List<Customer>, List<CustomerDto>>(customers);
+            return Ok(customerDto);
         }
 
         //endpoint to get customer by id
@@ -35,18 +40,21 @@ namespace Vidly.Controllers.Api
             {
                 return NotFound();
             }
-            return Ok(customer);
+            
+            var customerDto = _mapper.Map<Customer, CustomerDto>(customer);
+            return Ok(customerDto);
         }
 
         //endpoint to create customer
         [HttpPost("CreateCustomer")]
-        public IActionResult CreateCustomer([FromBody] Customer customer)
+        public IActionResult CreateCustomer([FromBody] CustomerDto customerDto)
         {
-            if (customer == null)
+            if (customerDto == null)
             {
                 return BadRequest();
             }
 
+            var customer = _mapper.Map<CustomerDto,Customer>(customerDto);
             _context.Add(customer);
             _context.SaveChanges();
             return Ok();
@@ -54,7 +62,7 @@ namespace Vidly.Controllers.Api
 
         //endpoint to update customer 
         [HttpPut("UpdateCustomer/{id}")]
-        public IActionResult EditCustomer(int id,[FromBody] Customer customer) { 
+        public IActionResult EditCustomer(int id,[FromBody] CustomerDto customerDto) { 
             
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
 
@@ -63,10 +71,11 @@ namespace Vidly.Controllers.Api
                 return NotFound();
             }
 
-            customerInDb.Name = customer.Name;
-            customerInDb.BirthDate = customer.BirthDate;
-            customerInDb.MembershipType = customer.MembershipType;
-            customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+            _mapper.Map(customerDto,customerInDb);
+
+            //customerInDb.Name = customerDto.Name;
+            //customerInDb.BirthDate = customerDto.BirthDate;
+            //customerInDb.IsSubscribedToNewsletter = customerDto.IsSubscribedToNewsletter;
 
             _context.Update(customerInDb);
             _context.SaveChanges();

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Policy;
 using Vidly.Controllers;
@@ -19,6 +20,8 @@ namespace Vidly
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddAutoMapper(typeof(Program));
 
             var app = builder.Build();
 
