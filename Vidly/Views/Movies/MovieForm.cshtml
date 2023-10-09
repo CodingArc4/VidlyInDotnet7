@@ -35,7 +35,11 @@
 
 
     <br />
-    @Html.HiddenFor(m => m.Movie.Id)
+    <input hidden asp-for="Movie.Id" />
     <button type="submit" class="btn btn-primary">Save</button>
 </form>
 
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

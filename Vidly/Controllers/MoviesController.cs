@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 using System.Net.Mime;
 using Vidly.Data;
 using Vidly.Models;
@@ -38,9 +39,20 @@ namespace Vidly.Controllers
 
         //action method to add/edit movie
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Save(Movie movie)
         {
-            if (movie.Id == 0)
+            if(!ModelState.IsValid)
+            {
+                var viewmodel = new MovieFromViewModel
+                {
+                    Movie = movie,
+                    Genres = _context.Genres.ToList()
+                };
+                return View("MovieForm", viewmodel);
+            }
+
+            if (movie.Id == 0 || movie.Id == null)
                 _context.Movies.Add(movie);
             else
             {
@@ -54,7 +66,7 @@ namespace Vidly.Controllers
             }
 
             _context.SaveChanges();
-
+           
             return RedirectToAction("Index", "Movies");
         }
 
