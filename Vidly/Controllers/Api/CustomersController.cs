@@ -18,7 +18,7 @@ namespace Vidly.Controllers.Api
         }
 
         //endpoint to get customers
-        [HttpGet]
+        [HttpGet("GetCustomers")]
         public IActionResult GetAllCustomers()
         {
             var customers = _context.Customers.ToList();
@@ -26,7 +26,7 @@ namespace Vidly.Controllers.Api
         }
 
         //endpoint to get customer by id
-        [HttpGet]
+        [HttpGet("GetCustomerById/{id}")]
         public IActionResult GetCustomersById(int id)
         {
             var customer = _context.Customers.SingleOrDefault(x => x.Id == id);
@@ -39,7 +39,7 @@ namespace Vidly.Controllers.Api
         }
 
         //endpoint to create customer
-        [HttpPost]
+        [HttpPost("CreateCustomer")]
         public IActionResult CreateCustomer([FromBody] Customer customer)
         {
             if (customer == null)
@@ -48,11 +48,12 @@ namespace Vidly.Controllers.Api
             }
 
             _context.Add(customer);
+            _context.SaveChanges();
             return Ok();
         }
 
         //endpoint to update customer 
-        [HttpPut]
+        [HttpPut("UpdateCustomer/{id}")]
         public IActionResult EditCustomer(int id,[FromBody] Customer customer) { 
             
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
@@ -68,10 +69,11 @@ namespace Vidly.Controllers.Api
             customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
 
             _context.Update(customerInDb);
+            _context.SaveChanges();
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("Delete/{id}")]
         public IActionResult DeleteCustomer(int id)
         {
             var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
@@ -80,7 +82,8 @@ namespace Vidly.Controllers.Api
                 return NotFound();
             }
 
-            _context.Remove(customer);
+            _context.Customers.Remove(customer);
+            _context.SaveChanges();
             return Ok();
         }
     }
