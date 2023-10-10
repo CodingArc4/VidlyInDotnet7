@@ -16,8 +16,7 @@ namespace Vidly.Controllers
             _context = context;
         }
 
-        [Authorize]
-        public ViewResult Index()
+        public IActionResult Index()
         {
             var customers = _context.Customers.Include(c => c.MembershipType).ToList();
 

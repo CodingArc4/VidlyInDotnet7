@@ -9,10 +9,13 @@ namespace Vidly.Mappings
         public MappingProfile()
         {
             CreateMap<Customer, CustomerDto>();
+            CreateMap<Movie, MovieDto>();
             CreateMap<MembershipType, MembershipDto>();
+            CreateMap<Genre, GenreDto>();
 
 
             CreateMap<CustomerDto, Customer>();
+            CreateMap<MovieDto, Movie>();
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Vidly.Controllers
             return View();
         }
 
+        //endpoint for login
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
@@ -45,6 +46,7 @@ namespace Vidly.Controllers
             return View(loginViewModel);
         }
 
+        //endpoint for register
         public async Task<IActionResult> Register()
         {
             //if roles doesnt exists then create roles

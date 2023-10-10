@@ -23,7 +23,7 @@
 
     <div class="form-group">
         <label asp-for="Movie.GenreId"></label>
-        @Html.DropDownListFor(m=> m.Movie.GenreId,new SelectList(Model.Genres,"Id","Name"),
+        @Html.DropDownListFor(m=> m.Movie.GenreId,new SelectList(Model.Genres,"Id","Type"),
         "Select Genre",new {@class="form-control"})
     </div>
 

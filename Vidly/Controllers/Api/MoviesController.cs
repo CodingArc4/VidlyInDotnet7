@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Vidly.Data;
+using Vidly.Dtos;
 using Vidly.Models;
 
 namespace Vidly.Controllers.Api
@@ -10,18 +13,21 @@ namespace Vidly.Controllers.Api
     public class MoviesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public MoviesController(ApplicationDbContext context)
+        public MoviesController(ApplicationDbContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         //endpoint to get
         [HttpGet("GetMovies")]
         public IActionResult GetAllMovies()
         {
-            var movies = _context.Movies.ToList();
-            return Ok(movies);
+            var movies = _context.Movies.Include(x => x.Genre).ToList();
+            var movieDto = _mapper.Map<List<Movie>, List<MovieDto>>(movies);
+            return Ok(movieDto);
         }
 
         //endpoint to get  by id
@@ -34,18 +40,21 @@ namespace Vidly.Controllers.Api
             {
                 return NotFound();
             }
-            return Ok(movies);
+
+            var moviesDto = _mapper.Map<Movie, MovieDto>(movies);
+            return Ok(moviesDto);
         }
 
         //endpoint to create 
         [HttpPost("CreateMovie")]
-        public IActionResult CreateMovie([FromBody] Movie movie)
+        public IActionResult CreateMovie([FromBody] MovieDto movieDto)
         {
-            if (movie == null)
+            if (movieDto == null)
             {
                 return BadRequest();
             }
 
+            var movie = _mapper.Map<MovieDto, Movie>(movieDto);
             _context.Add(movie);
             _context.SaveChanges();
             return Ok();
@@ -53,7 +62,7 @@ namespace Vidly.Controllers.Api
 
         //endpoint to update 
         [HttpPut("UpdateMovie/{id}")]
-        public IActionResult EditMovie(int id, [FromBody] Movie movie)
+        public IActionResult EditMovie(int id, [FromBody] MovieDto movieDto)
         {
 
             var moviesInDb = _context.Movies.SingleOrDefault(c => c.Id == id);
@@ -63,10 +72,12 @@ namespace Vidly.Controllers.Api
                 return NotFound();
             }
 
-            moviesInDb.Name = movie.Name;
-            moviesInDb.ReleaseDate = movie.ReleaseDate;
-            moviesInDb.NumberInStock = movie.NumberInStock;
-            moviesInDb.DateAdded = DateTime.Now;
+            _mapper.Map(movieDto, moviesInDb);
+
+            //moviesInDb.Name = movieDto.Name;
+            //moviesInDb.ReleaseDate = movieDto.ReleaseDate;
+            //moviesInDb.NumberInStock = movieDto.NumberInStock;
+            //moviesInDb.DateAdded = DateTime.Now;
 
             _context.Update(moviesInDb);
             _context.SaveChanges();
