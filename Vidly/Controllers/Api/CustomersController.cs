@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Vidly.Data;
 using Vidly.Dtos;
@@ -25,7 +26,7 @@ namespace Vidly.Controllers.Api
         [HttpGet("GetCustomers")]
         public IActionResult GetAllCustomers()
         {
-            var customers = _context.Customers.ToList();
+            var customers = _context.Customers.Include(c => c.MembershipType).ToList();
             var customerDto = _mapper.Map<List<Customer>, List<CustomerDto>>(customers);
             return Ok(customerDto);
         }

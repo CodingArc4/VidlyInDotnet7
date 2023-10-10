@@ -8,7 +8,7 @@ namespace Vidly.CustomValidaton
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            var customerDto = (CustomerDto)validationContext.ObjectInstance;
+            var customerDto = (Customer)validationContext.ObjectInstance;
 
             if(customerDto.MembershipTypeId == MembershipType.Unknown || customerDto.MembershipTypeId == MembershipType.PayAsYouGo)
             {
