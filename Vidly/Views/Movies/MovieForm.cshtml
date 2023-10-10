@@ -23,8 +23,15 @@
 
     <div class="form-group">
         <label asp-for="Movie.GenreId"></label>
-        @Html.DropDownListFor(m=> m.Movie.GenreId,new SelectList(Model.Genres,"Id","Type"),
-        "Select Genre",new {@class="form-control"})
+        <select asp-for="Movie.GenreId"  class="form-control">
+            <option value="">Select Genre</option>
+            @foreach(var item in Model.Genres)
+            {
+                <option value="@item.Id">@item.Type</option>
+            }
+        </select>
+        @*@Html.DropDownListFor(m=> m.Movie.GenreId,new SelectList(Model.Genres,"Id","Type"),
+        "Select Genre",new {@class="form-control"})*@
     </div>
 
     <br />
